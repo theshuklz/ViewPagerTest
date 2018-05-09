@@ -1,10 +1,9 @@
 package com.shuklz.viewpagertest
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
+import android.support.design.widget.TabLayout
 import android.support.v7.app.AppCompatActivity
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -12,27 +11,40 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        pager.adapter = FeatureAdapter(supportFragmentManager)
-        topTabLayout.setupWithViewPager(pager)
+
+        setupTopTabLayout()
+        pager.adapter = ViewPagerAdapter(supportFragmentManager)
+        setupBottomTabLayout()
     }
 
-    class FeatureAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
-        override fun getItem(position: Int): Fragment {
-            val fragment = DemoFragment()
-            fragment.arguments = Bundle().apply {
-                // Our object is just an integer :-P
-                putInt(ARG_OBJECT, position + 1)
+    private fun setupBottomTabLayout() {
+        bottomTabLayout.addTab(bottomTabLayout.newTab().setText("Bottom 1"))
+        bottomTabLayout.addTab(bottomTabLayout.newTab().setText("Bottom 2"))
+        bottomTabLayout.addTab(bottomTabLayout.newTab().setText("Bottom 3"))
+        bottomTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                pager.setCurrentItem(tab!!.position)
+                Toast.makeText(this@MainActivity, tab?.text.toString(), Toast.LENGTH_SHORT).show()
             }
-            return fragment
-        }
 
-        override fun getPageTitle(position: Int): CharSequence? {
-            return "Tab " + (position + 1)
-        }
+        })
+    }
 
-        override fun getCount(): Int {
-            return 5
-        }
+    private fun setupTopTabLayout() {
+        topTabLayout.setupWithViewPager(pager)
+        topTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
 
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                Toast.makeText(this@MainActivity, tab?.text.toString(), Toast.LENGTH_SHORT).show()
+            }
+
+        })
     }
 }
