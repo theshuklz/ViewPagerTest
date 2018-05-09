@@ -12,9 +12,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val fm = supportFragmentManager
-
-        pager.adapter = FeatureAdapter(fm)
+        pager.adapter = FeatureAdapter(supportFragmentManager)
+        topTabLayout.setupWithViewPager(pager)
     }
 
     class FeatureAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
@@ -25,6 +24,10 @@ class MainActivity : AppCompatActivity() {
                 putInt(ARG_OBJECT, position + 1)
             }
             return fragment
+        }
+
+        override fun getPageTitle(position: Int): CharSequence? {
+            return "Tab " + (position + 1)
         }
 
         override fun getCount(): Int {
